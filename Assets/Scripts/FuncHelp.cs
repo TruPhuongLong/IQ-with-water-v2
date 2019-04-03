@@ -11,6 +11,12 @@ public class FuncHelp: MonoBehaviour
 	public static (GameObject, float, float) InitBottle(GameObject prefab,
 		float widthScale, HeightScale heightScale, string name)
 	{
+		//only for infinity:
+		if (heightScale == HeightScale.infinity)
+		{
+			heightScale = HeightScale.thirteen;
+		}
+
 		// bottom
 		var bottom = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
 		bottom.transform.localScale = new Vector3(widthScale, thickScale, 0);
@@ -55,8 +61,10 @@ public class FuncHelp: MonoBehaviour
 		parent.GetComponent<BoxCollider2D>().size = new Vector2(widthBottle, heightBottle);
 		parent.GetComponent<BoxCollider2D>().offset = new Vector2(0, heightBottle / 2);
 		parent.GetComponent<BoxCollider2D>().isTrigger = true;
-		parent.AddComponent<BottleController>();
 
+		//add BottleController
+		parent.AddComponent<BottleController>();
+		
 		return (parent, widthBottle, heightBottle);
 	}
 }
@@ -64,7 +72,26 @@ public class FuncHelp: MonoBehaviour
 public enum HeightScale
 {
 	none = 0,
-	infinity = 13,
+	one = 1,
+	two = 2,
+	three = 3,
+	four = 4,
+	five = 5,
+	six = 6,
+	seven = 7,
+	eight = 8,
+	nine = 9,
+	ten = 10,
 	eleven = 11,
-	seven = 7
+	twelve = 12,
+	thirteen = 13,
+	fourteen = 14,
+	fifteen = 15,
+	sixteen = 16,
+	seventeen = 17,
+	eighteen = 18,
+	nineteen = 19,
+	twenty = 20,
+
+	infinity = 100,
 }
