@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\BlurController.cs" />
     <Compile Include="Assets\Scripts\BottleController.cs" />
+    <Compile Include="Assets\Scripts\EraseController.cs" />
     <Compile Include="Assets\Scripts\FuncHelp.cs" />
     <Compile Include="Assets\Scripts\LiquidController.cs" />
     <Compile Include="Assets\Scripts\SceneController.cs" />

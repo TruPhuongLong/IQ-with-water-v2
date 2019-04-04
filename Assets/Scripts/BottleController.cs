@@ -13,11 +13,13 @@ public class BottleController : MonoBehaviour
 
 	SceneController sceneController;
 
-	public Vector2 top_center;
+	public Vector3 top_center;
 
-	public Vector2 top_left;
+	public Vector3 top_left;
 
-	public Vector2 top_right;
+	public Vector3 top_right;
+
+
 
 
 	public void reset()
