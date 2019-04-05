@@ -62,9 +62,10 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\BlurController.cs" />
     <Compile Include="Assets\Scripts\BottleController.cs" />
-    <Compile Include="Assets\Scripts\EraseController.cs" />
     <Compile Include="Assets\Scripts\FuncHelp.cs" />
     <Compile Include="Assets\Scripts\LiquidController.cs" />
+    <Compile Include="Assets\Scripts\MouthBottleController.cs" />
+    <Compile Include="Assets\Scripts\PaticleController.cs" />
     <Compile Include="Assets\Scripts\SceneController.cs" />
     <None Include="Assets\Shaders\BlurEffect.shader" />
     <None Include="Assets\Shaders\UnlitTransparent.shader" />

@@ -13,13 +13,20 @@ public class BottleController : MonoBehaviour
 
 	SceneController sceneController;
 
-	public Vector3 top_center;
+	public GameObject top_center;
 
-	public Vector3 top_left;
+	public GameObject top_left;
 
-	public Vector3 top_right;
+	public GameObject top_right;
 
+	public List<GameObject> listLiquidPaticle;
 
+	private void Awake()
+	{
+		top_center = new GameObject("top_center");
+		top_left = new GameObject("top_left");
+		top_right = new GameObject("top_right");
+	}
 
 
 	public void reset()
@@ -98,5 +105,7 @@ public class BottleController : MonoBehaviour
 			transform.GetChild(i).GetComponent<SpriteRenderer>().color = color;
 		}
 	}
+
+	
 
 }

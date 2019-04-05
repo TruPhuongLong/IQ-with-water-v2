@@ -25,6 +25,10 @@ public class SceneController : MonoBehaviour
 
 	Vector3 startFunnel;
 	Vector3 startFrom;
+	GameObject anchor_funnel;
+	GameObject anchor_from;
+
+	bool isRotateFromBottle;
 
 
 	void InitBottles() {
@@ -53,25 +57,25 @@ public class SceneController : MonoBehaviour
 		child2.transform.Translate(-(widthChild2 / 2 + paddingRight), padding, 0);
 
 		// init point: top_center for parent, child:
-		parent.GetComponent<BottleController>().top_center = new Vector3(
+		parent.GetComponent<BottleController>().top_center.transform.position = new Vector3(
 			parent.transform.position.x, parent.transform.position.y + heightParent);
-		child1.GetComponent<BottleController>().top_center = new Vector3(
+		child1.GetComponent<BottleController>().top_center.transform.position = new Vector3(
 			child1.transform.position.x, child1.transform.position.y + heightChild1);
-		child2.GetComponent<BottleController>().top_center = new Vector3(
+		child2.GetComponent<BottleController>().top_center.transform.position = new Vector3(
 			child2.transform.position.x, child2.transform.position.y + heightChild2);
 
 		//init anchor point for rotate bottle
-		parent.GetComponent<BottleController>().top_left = new Vector3(parent.transform.position.x - widthParent / 2,
+		parent.GetComponent<BottleController>().top_left.transform.position = new Vector3(parent.transform.position.x - widthParent / 2,
 			parent.transform.position.y + heightParent * 4 / 5);
-		parent.GetComponent<BottleController>().top_right = new Vector3(parent.transform.position.x + widthParent / 2,
+		parent.GetComponent<BottleController>().top_right.transform.position = new Vector3(parent.transform.position.x + widthParent / 2,
 			parent.transform.position.y + heightParent * 4 / 5);
-		child1.GetComponent<BottleController>().top_left = new Vector3(child1.transform.position.x - widthChild1 / 2,
+		child1.GetComponent<BottleController>().top_left.transform.position = new Vector3(child1.transform.position.x - widthChild1 / 2,
 			child1.transform.position.y + heightChild1 * 4 / 5);
-		child1.GetComponent<BottleController>().top_right = new Vector3(child1.transform.position.x + widthChild1 / 2,
+		child1.GetComponent<BottleController>().top_right.transform.position = new Vector3(child1.transform.position.x + widthChild1 / 2,
 			child1.transform.position.y + heightChild1 * 4 / 5);
-		child2.GetComponent<BottleController>().top_left = new Vector3(child2.transform.position.x - widthChild2 / 2,
+		child2.GetComponent<BottleController>().top_left.transform.position = new Vector3(child2.transform.position.x - widthChild2 / 2,
 			child2.transform.position.y + heightChild2 * 4 / 5);
-		child2.GetComponent<BottleController>().top_right = new Vector3(child2.transform.position.x + widthChild2 / 2,
+		child2.GetComponent<BottleController>().top_right.transform.position = new Vector3(child2.transform.position.x + widthChild2 / 2,
 			child2.transform.position.y + heightChild2 * 4 / 5);
 
 		//declare volumetric of each bottle
@@ -83,7 +87,7 @@ public class SceneController : MonoBehaviour
 			= HeightScale.seven;
 
 		// init liquid:
-		parent.GetComponent<BottleController>().realyVolumetricSource 
+		parent.GetComponent<BottleController>().realyVolumetricSource
 			= (int)HeightScale.infinity;
 		child1.GetComponent<BottleController>().realyVolumetricSource = 0;
 		child2.GetComponent<BottleController>().realyVolumetricSource = 0;
@@ -98,46 +102,56 @@ public class SceneController : MonoBehaviour
 		from.transform.position = startFrom;
 	}
 
-	void TranslateBottle() {
-		Vector3 anchor_funnel =
-			to == parent ? anchor_right_funnel.transform.position :
-			to == child2 ? anchor_left_funnel.transform.position :
-			from == parent ? anchor_left_funnel.transform.position :
-			anchor_right_funnel.transform.position;
+	void getAnchorPoint() {
+		anchor_funnel =
+			to == parent ? anchor_right_funnel :
+			to == child2 ? anchor_left_funnel :
+			from == parent ? anchor_left_funnel :
+			anchor_right_funnel;
 
-		Vector3 anchor_from =
-			anchor_funnel == anchor_right_funnel.transform.position ?
+		anchor_from =
+			anchor_funnel == anchor_right_funnel ?
 			from.GetComponent<BottleController>().top_left :
 			from.GetComponent<BottleController>().top_right;
+	}
 
-		var delta = anchor_funnel - anchor_from;
+	void TranslateBottle() {
+		getAnchorPoint();
+		var delta = anchor_funnel.transform.position - anchor_from.transform.position;
 		print("from top_left " + from.GetComponent<BottleController>().top_left);
+
 		from.transform.Translate(
 			delta.x,
 			delta.y,
 			0);
 	}
 
+	void RotateBottle() {
+		from.transform.RotateAround(anchor_from.transform.position, Vector3.forward, -20 * Time.deltaTime);
+	}
+
 
 	public IEnumerator TransformLiquid() {
 		isTransformLiquid = true;
 
-		var listLiquidPaticle = liquid.GetComponent<LiquidController>().listLiquidPaticle;
-		Debug.Log("list count when clik: " + listLiquidPaticle.Count);
-
 		startFrom = from.transform.position;
 
-		//main
 		//translate funnel:
-		TranslateFunnelTo(to.GetComponent<BottleController>().top_center);
+		TranslateFunnelTo(to.GetComponent<BottleController>().top_center.transform.position);
 
 		//translate bottle
 		TranslateBottle();
 
+		//rotate bottle
+		isRotateFromBottle = true;
+
+		
 		yield return new WaitForSeconds(5);
+		isRotateFromBottle = false;
 
+		//wait 5 second and reset everything
+		yield return new WaitForSeconds(10);
 		ResetPosition();
-
 		from.GetComponent<BottleController>().reset();
 		to.GetComponent<BottleController>().reset();
 
@@ -160,10 +174,12 @@ public class SceneController : MonoBehaviour
 		InitBottles();
 	}
 
-	private void Start()
+	private void Update()
 	{
-		var listLiquidPaticle = liquid.GetComponent<LiquidController>().listLiquidPaticle;
-		Debug.Log("list count: " + listLiquidPaticle.Count);
+		if (isRotateFromBottle)
+		{
+			RotateBottle();
+		}
 	}
 
 

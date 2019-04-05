@@ -56,15 +56,30 @@ public class FuncHelp: MonoBehaviour
 		left.transform.parent = parent.transform;
 		right.transform.parent = parent.transform;
 
-		//add BoxCollider2D to Parent
+		//add BoxCollider2D to Parent to know when user click on bottle
+		// that why this box collider need around this bottle
 		parent.AddComponent<BoxCollider2D>();
 		parent.GetComponent<BoxCollider2D>().size = new Vector2(widthBottle, heightBottle);
 		parent.GetComponent<BoxCollider2D>().offset = new Vector2(0, heightBottle / 2);
 		parent.GetComponent<BoxCollider2D>().isTrigger = true;
 
+		// add mouth of bottle to know when liquid paticle in or out
+		// we need minus for thickBottle / 4 
+		var mouth = new GameObject("Mouth");
+		mouth.transform.Translate(0, heightBottle - thickBottle / 4, 0);
+		mouth.AddComponent<BoxCollider2D>();
+		mouth.GetComponent<BoxCollider2D>().size = new Vector2(widthBottle - thickBottle / 4, thickBottle);
+		mouth.GetComponent<BoxCollider2D>().isTrigger = true;
+
+		mouth.AddComponent<MouthBottleController>();
+		mouth.transform.SetParent(parent.transform);
+
 		//add BottleController
 		parent.AddComponent<BottleController>();
-		
+		parent.GetComponent<BottleController>().top_center.transform.parent = parent.transform;
+		parent.GetComponent<BottleController>().top_left.transform.parent = parent.transform;
+		parent.GetComponent<BottleController>().top_right.transform.parent = parent.transform;
+
 		return (parent, widthBottle, heightBottle);
 	}
 }
